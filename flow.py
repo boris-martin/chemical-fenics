@@ -2,8 +2,8 @@ from fenics import *
 from mshr import *
 
 
-domain = Rectangle(Point(0,0), Point(1, 1))
-mesh = generate_mesh(domain, 8)
+domain = Rectangle(Point(0,0), Point(1, 1)) - Circle(Point(0.5, 0.5), 0.2)
+mesh = generate_mesh(domain, 64)
 normal = FacetNormal(mesh)
 
 # Manufactured solution : 1 + x² + 2y² => -laplacian = f is -6
