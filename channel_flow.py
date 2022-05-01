@@ -13,9 +13,9 @@ rho = 1            # density
 
 # Mesh
 length = 4
-p_in = 8
+p_in = 8*4
 domain = Rectangle(Point(0,0), Point(length, 1)) #- Circle(Point(0.5, 0.5), 0.1)
-mesh = generate_mesh(domain, 64)
+mesh = generate_mesh(domain, 50)
 
 V = VectorFunctionSpace(mesh, 'P', 2)
 Q = FunctionSpace(mesh, 'P', 1)
@@ -32,8 +32,28 @@ bcp_outflow = DirichletBC(Q, Constant(0), outflow)
 bcu = [bcu_noslip]
 bcp = [bcp_inflow, bcp_outflow]
 
-solver = fluidutils.FluidSolver({'mu' : mu, 'rho' : rho}, mesh, bcu, bcp, dt, V, Q)
+fluid_solver = fluidutils.FluidSolver({'mu' : mu, 'rho' : rho}, mesh, bcu, bcp, dt, V, Q)
 
+# Define chemical problem
+# Generate chemical component in a circle of radius 0.1 on 0.5, 0.5
+f = Expression('pow(x[0]-0.5, 2) + pow(x[1]-0.5, 2) <= 0.1*0.1 ? 1.0 : 0.0', degree=2)
+diff = Constant(0.1)
+k = Constant(1./dt)
+
+c = TrialFunction(Q)
+v = TestFunction(Q)
+c_n = Function(Q)
+c_ = Function(Q)
+
+a_diff = k * (c * v * dx) + diff * dot(grad(c), grad(v)) * dx + dot(fluid_solver.u_, grad(c)) * v * dx
+L_diff = k * (c_n * v * dx) + f * v * dx
+
+t = 0
+vtk_c = File('out/chemical.pvd')
 for n in range(num_steps):
 
-    solver.step()
+    t += dt 
+    fluid_solver.step()
+    solve(a_diff == L_diff, c_)
+    c_n.assign(c_)
+    vtk_c << c_, t
