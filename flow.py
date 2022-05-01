@@ -1,7 +1,9 @@
 from fenics import *
+from mshr import *
 
 
-mesh = UnitSquareMesh(8, 8)
+domain = Rectangle(Point(0,0), Point(1, 1))
+mesh = generate_mesh(domain, 8)
 normal = FacetNormal(mesh)
 
 # Manufactured solution : 1 + x² + 2y² => -laplacian = f is -6
