@@ -26,7 +26,12 @@ L = f * v * dx + g * v * ds
 
 u = Function(V)
 u.rename('data', 'Main scalar')
-solve(a == L, u, bc)
+
+A = assemble(a)
+b = assemble(L)
+bc.apply(A, b)
+
+solve(A, u.vector(), b)
 
 vtkfile = File('out/poisson.pvd')
 vtkfile << u
