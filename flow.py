@@ -25,6 +25,7 @@ a = dot(grad(u), grad(v)) * dx
 L = f * v * dx + g * v * ds
 
 u = Function(V)
+u.rename('data', 'Main scalar')
 solve(a == L, u, bc)
 
 vtkfile = File('out/poisson.pvd')
