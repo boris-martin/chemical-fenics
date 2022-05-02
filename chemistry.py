@@ -11,7 +11,7 @@ normal = FacetNormal(mesh)
 
 # Manufactured solution : 1 + x² + 2y² => -laplacian = f is -6
 P = FiniteElement('P', triangle, 1)
-V = FunctionSpace(mesh, P * P)
+V = FunctionSpace(mesh, MixedElement([P, P]))
 
 # No BCs: only homgenuous Neumann
 
@@ -26,7 +26,13 @@ u = TrialFunction(V)
 v = TestFunction(V)
 f = Expression(('x[0]/4', '1 - x[0]/4'), degree=1)
 k = Constant(1. / dt)
-F = k * dot((u - u_n), v) * dx + inner(nabla_grad(u), nabla_grad(v)) * dx - dot(f, v) * dx
+
+u_1, u_2 = split(u)
+v_1, v_2 = split(v)
+u_n1, u_n2 = split(u_n)
+#F = k * dot((u - u_n), v) * dx + inner(nabla_grad(u), nabla_grad(v)) * dx - dot(f, v) * dx
+F = k * (u_1 - u_n1) * v_1 * dx + dot(grad(u_1), grad(v_1)) * dx - dot(f[0], v_1) * dx + \
+    k * (u_2 - u_n2) * v_2 * dx + dot(grad(u_2), grad(v_2)) * dx - dot(f[1], v_2) * dx
 a = lhs(F)
 L = rhs(F)
 
