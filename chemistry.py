@@ -9,30 +9,29 @@ domain = Rectangle(Point(0,0), Point(4, 1))
 mesh = generate_mesh(domain, 32)
 normal = FacetNormal(mesh)
 
-# Manufactured solution : 1 + x² + 2y² => -laplacian = f is -6
+# Three dimensional vector for three species
 P = FiniteElement('P', triangle, 1)
 V = FunctionSpace(mesh, MixedElement([P, P, P]))
 
-# No BCs: only homgenuous Neumann
+# No BCs: only homgenuous Von Neumann. It means nothing leaves the domain
+# Von neumann BCs give rise to surface loads, which are simply zero here.
 
 
-# Create used terms
+# Create used terms (_n suffix means "at previous step")
 u_ = Function(V)
 u_n = Function(V)
+u_1, u_2, u_3 = split(u_)
+v_1, v_2, v_3 = split(v)
 
 # Formulate the problem
 
-u = u_ # Why not a trial function?
 v = TestFunction(V)
 f = Expression(('x[0]/4', '1 - x[0]/4'), degree=1)
 k = Constant(1. / dt)
 r = Constant(0.1) # Reaction speed
 diff = Constant(0.1) # Diffusivity
 
-u_1, u_2, u_3 = split(u)
-v_1, v_2, v_3 = split(v)
 u_n1, u_n2, u_n3 = split(u_n)
-#F = k * dot((u - u_n), v) * dx + inner(nabla_grad(u), nabla_grad(v)) * dx - dot(f, v) * dx
 F = k * (u_1 - u_n1) * v_1 * dx + diff * dot(grad(u_1), grad(v_1)) * dx - dot(f[0], v_1) * dx + r * u_1 * u_2 * v_1 * dx + \
     k * (u_2 - u_n2) * v_2 * dx + diff * dot(grad(u_2), grad(v_2)) * dx - dot(f[1], v_2) * dx + r * u_1 * u_2 * v_2 * dx + \
     k * (u_3 - u_n3) * v_3 * dx + diff * dot(grad(u_3), grad(v_3)) * dx                       - r * u_1 * u_2 * v_3 * dx
@@ -59,8 +58,3 @@ for n in range(num_steps):
     vtkfileA << u_A, t
     vtkfileB << u_B, t
     vtkfileC << u_C, t
-
-
-
-vtkfile = File('out/poisson.pvd')
-vtkfile << u
