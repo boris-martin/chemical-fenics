@@ -39,11 +39,13 @@ b = assemble(L)
 
 t = 0
 vtkfile = File('out/chemical_pure.pvd')
+
 for n in range(num_steps):
 
     t += dt 
     print("Time {} of {}".format(t, T))
     b = assemble(L) # Update usage of u_n
+    # A must be re-assembled only with changing time step
     solve(A, u_.vector(), b)
 
     u_n.assign(u_)
