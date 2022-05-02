@@ -26,8 +26,8 @@ u = u_ # Why not a trial function?
 v = TestFunction(V)
 f = Expression(('x[0]/4', '1 - x[0]/4'), degree=1)
 k = Constant(1. / dt)
-r = Constant(10) # Reaction speed
-diff = Constant(10) # Diffusivity
+r = Constant(0.1) # Reaction speed
+diff = Constant(0.1) # Diffusivity
 
 u_1, u_2, u_3 = split(u)
 v_1, v_2, v_3 = split(v)
