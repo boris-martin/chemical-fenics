@@ -26,15 +26,15 @@
     </participant>
 
     <participant name="Chemistry">
+    <export:vtu />
       <use-mesh name="Chemistry-Mesh" provide="yes" />
       <use-mesh name="Flow-Mesh" from="Flow" />
       <read-data name="Velocity" mesh="Chemistry-Mesh" />
-      <mapping:rbf-thin-plate-splines
+      <mapping:nearest-neighbor
         direction="read"
         from="Flow-Mesh"
         to="Chemistry-Mesh"
-        constraint="consistent"
-        x-dead="true" />
+        constraint="consistent" />
     </participant>
 
     <m2n:sockets from="Flow" to="Chemistry" exchange-directory=".." />
@@ -42,7 +42,7 @@
     <coupling-scheme:serial-explicit>
       <participants first="Flow" second="Chemistry" />
       <max-time value="10.0" />
-      <time-window-size value="0.01" />
+      <time-window-size value="0.1" />
       <exchange data="Velocity" mesh="Flow-Mesh" from="Flow" to="Chemistry" />
 
     </coupling-scheme:serial-explicit>

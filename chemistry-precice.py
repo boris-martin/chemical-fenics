@@ -86,4 +86,4 @@ while precice.is_coupling_ongoing():
     vtkfileB << u_B, t
     vtkfileC << u_C, t
 
-    precice_dt = precice.advance(dt(0))
+    precice_dt = precice.advance(dt)
