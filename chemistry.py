@@ -20,12 +20,12 @@ V = FunctionSpace(mesh, MixedElement([P, P, P]))
 # Create used terms (_n suffix means "at previous step")
 u_ = Function(V)
 u_n = Function(V)
+v = TestFunction(V)
 u_1, u_2, u_3 = split(u_)
 v_1, v_2, v_3 = split(v)
 
 # Formulate the problem
 
-v = TestFunction(V)
 f = Expression(('x[0]/4', '1 - x[0]/4'), degree=1)
 k = Constant(1. / dt)
 r = Constant(0.1) # Reaction speed
