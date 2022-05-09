@@ -31,10 +31,13 @@ k = Constant(1. / dt)
 r = Constant(0.1) # Reaction speed
 diff = Constant(0.1) # Diffusivity
 
+# Velocity field (from preCICE in the future)
+flow = Expression(("vmax * 4*x[1]*(1-x[1])", "0"), degree=2, vmax=0.5)
+
 u_n1, u_n2, u_n3 = split(u_n)
-F = k * (u_1 - u_n1) * v_1 * dx + diff * dot(grad(u_1), grad(v_1)) * dx - dot(f[0], v_1) * dx + r * u_1 * u_2 * v_1 * dx + \
-    k * (u_2 - u_n2) * v_2 * dx + diff * dot(grad(u_2), grad(v_2)) * dx - dot(f[1], v_2) * dx + r * u_1 * u_2 * v_2 * dx + \
-    k * (u_3 - u_n3) * v_3 * dx + diff * dot(grad(u_3), grad(v_3)) * dx                       - r * u_1 * u_2 * v_3 * dx
+F = k * (u_1 - u_n1) * v_1 * dx + 0.5 * dot(flow, grad(u_1 + u_n1)) * v_1 * dx + diff * dot(grad(u_1), grad(v_1)) * dx - dot(f[0], v_1) * dx + r * u_1 * u_2 * v_1 * dx + \
+    k * (u_2 - u_n2) * v_2 * dx + 0.5 * dot(flow, grad(u_2 + u_n2)) * v_2 * dx + diff * dot(grad(u_2), grad(v_2)) * dx - dot(f[1], v_2) * dx + r * u_1 * u_2 * v_2 * dx + \
+    k * (u_3 - u_n3) * v_3 * dx + 0.5 * dot(flow, grad(u_3 + u_n3)) * v_3 * dx + diff * dot(grad(u_3), grad(v_3)) * dx                       - r * u_1 * u_2 * v_3 * dx
 
 
 
