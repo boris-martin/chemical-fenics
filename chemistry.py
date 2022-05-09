@@ -29,7 +29,7 @@ v_1, v_2, v_3 = split(v)
 f = Expression(('x[0]/4', '1 - x[0]/4'), degree=1)
 k = Constant(1. / dt)
 r = Constant(0.1) # Reaction speed
-diff = Constant(0.1) # Diffusivity
+diff = Constant(0.01) # Diffusivity
 
 # Velocity field (from preCICE in the future)
 flow = Expression(("vmax * 4*x[1]*(1-x[1])", "0"), degree=2, vmax=0.5)
