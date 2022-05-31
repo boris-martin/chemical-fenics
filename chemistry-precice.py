@@ -27,7 +27,7 @@ class CouplingDomain(SubDomain):
 precice = fenicsprecice.Adapter(adapter_config_filename="chemistry-config.json")
 precice_dt = precice.initialize(coupling_subdomain=CouplingDomain(), read_function_space=W)
 
-flow = precice.create_coupling_expression()
+flow_expr = precice.create_coupling_expression()
 
 dt = np.min([default_dt, precice_dt])
 
@@ -37,7 +37,7 @@ u_n = Function(V)
 v = TestFunction(V)
 u_1, u_2, u_3 = split(u_)
 v_1, v_2, v_3 = split(v)
-
+flow = Function(W)
 # Formulate the problem
 
 f = Expression(('x[0]/4', '1 - x[0]/4'), degree=1)
@@ -46,7 +46,7 @@ k = Constant(1. / dt)
 r = Constant(1.0) # Reaction speed
 diff = Constant(0.01) # Diffusivity
 
-# Velocity field (from preCICE in the future)
+# Velocity field when preCICE is not used
 # flow = Expression(("vmax * 4*x[1]*(1-x[1])", "0"), degree=2, vmax=0.5)
 
 u_n1, u_n2, u_n3 = split(u_n)
@@ -66,7 +66,8 @@ vtkfileC = File('out/chemical_C_precice.pvd')
 while precice.is_coupling_ongoing():
 
     read_data = precice.read_data()
-    precice.update_coupling_expression(flow, read_data)
+    precice.update_coupling_expression(flow_expr, read_data)
+    flow.interpolate(flow_expr)
     # If we add writing, do it here
 
     dt = np.min([default_dt, precice_dt])

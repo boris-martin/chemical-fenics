@@ -1,8 +1,8 @@
 from fenics import *
 from mshr import *
 
-T = 10.0           # final time
-num_steps = 100    # number of time steps
+T = 1.0           # final time
+num_steps = 10    # number of time steps
 dt = T / num_steps # time step size
 
 domain = Rectangle(Point(0,0), Point(4, 1))
