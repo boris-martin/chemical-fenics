@@ -3,12 +3,10 @@ from mshr import *
 import fenicsprecice
 import numpy as np
 
-T = 10.0           # final time
-num_steps = 100    # number of time steps
-default_dt = T / num_steps # time step size
+default_dt = 1.0 # time step size
 
-domain = Rectangle(Point(0,0), Point(4, 1))
-mesh = generate_mesh(domain, 32)
+domain = Rectangle(Point(0,0), Point(2.2, 0.41)) - Circle(Point(0.2, 0.2), 0.05)
+mesh = generate_mesh(domain, 64)
 normal = FacetNormal(mesh)
 
 # Three dimensional vector for three species
@@ -74,7 +72,7 @@ while precice.is_coupling_ongoing():
     k.assign(1. / dt)
 
     t += dt 
-    print("Time {:.3g} of {:.3g}".format(t, T))
+    print("Time {:.3g}".format(t))
     solve(F == 0, u_)
     u_n.assign(u_)
 
@@ -88,3 +86,5 @@ while precice.is_coupling_ongoing():
     vtkfileC << u_C, t
 
     precice_dt = precice.advance(dt)
+
+precice.finalize()

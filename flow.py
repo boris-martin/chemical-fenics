@@ -2,7 +2,7 @@ from fenics import *
 from mshr import *
 
 
-domain = Rectangle(Point(0,0), Point(1, 1)) - Circle(Point(0.5, 0.5), 0.2)
+domain = Rectangle(Point(0,0), Point(2.2, 0.41)) - Circle(Point(0.2, 0.2), 0.05)
 mesh = generate_mesh(domain, 64)
 normal = FacetNormal(mesh)
 
@@ -33,5 +33,5 @@ bc.apply(A, b)
 
 solve(A, u.vector(), b)
 
-vtkfile = File('out/poisson.pvd')
+vtkfile = File('out/flow.pvd')
 vtkfile << u
