@@ -19,7 +19,7 @@ mu = 0.001 # Dynamic viscosity
 rho = 1 # Density
 
 domain = Rectangle(Point(0,0), Point(2.2, 0.41)) - Circle(Point(0.2, 0.2), 0.05)
-mesh = generate_mesh(domain, 32)
+mesh = generate_mesh(domain, 64)
 normal = FacetNormal(mesh)
 
 # Expressions for evaluating BC
@@ -115,8 +115,8 @@ k.assign(dt)
 # No implicit coupling supported, as this is uni-directional coupling
 # If needed, implement checkpointing
 t = 0
-vtkfile = File('out/flow.pvd')
-
+subfolder = 'out_fine_fine_1_order'
+vtkfile = File(subfolder + '/chemical_fluid_write.pvd')
 
 while precice.is_coupling_ongoing():
 

@@ -30,7 +30,7 @@
       <use-mesh name="Chemistry-Mesh" provide="yes" />
       <use-mesh name="Flow-Mesh" from="Flow" />
       <read-data name="Velocity" mesh="Chemistry-Mesh" />
-      <mapping:nearest-neighbor
+      <mapping:linear-cell-interpolation
         direction="read"
         from="Flow-Mesh"
         to="Chemistry-Mesh"
@@ -41,8 +41,8 @@
 
     <coupling-scheme:serial-explicit>
       <participants first="Flow" second="Chemistry" />
-      <max-time value="5.0" />
-      <time-window-size value="0.1" />
+      <max-time value="5.O" />
+      <time-window-size value="0.05" />
       <exchange data="Velocity" mesh="Flow-Mesh" from="Flow" to="Chemistry" />
 
     </coupling-scheme:serial-explicit>
